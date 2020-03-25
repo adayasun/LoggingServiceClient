@@ -23,11 +23,12 @@ namespace LoggingServiceClient
             connected = true;
             int choice = 0;
             // Creates new instance of TcpClient as read only and destroy it after not in use
-            while(connected)
-            {
 
-                using (clientSocket = new TcpClient())
+            using (clientSocket = new TcpClient())
+            {
+                while (connected)
                 {
+
                     Console.WriteLine("Please enter 1 for Manual, 2 for Automatic or 3 to quit");
                     choice = int.Parse(UI.GetInput());
 
@@ -46,6 +47,7 @@ namespace LoggingServiceClient
                             user = AskForUserName(); //Received username
                             user = ComposeMessage(user);
                             serializeAndEncode(user);
+                            clientSocket.Close();
                         }
                         catch
                         {
@@ -57,6 +59,7 @@ namespace LoggingServiceClient
                         try
                         {
                             Send(user);
+                            clientSocket.Close();
                         }
                         catch
                         {
@@ -72,14 +75,13 @@ namespace LoggingServiceClient
                         connected = false;
                     }
                 }
-
             }
         }
 
         public void Send(Message user)
         {
-            while (connected == true)
-            {
+            //while (connected == true)
+            //{
                 try
                 {
 
@@ -95,7 +97,7 @@ namespace LoggingServiceClient
                 {
                     Console.WriteLine(e);
                 }
-            }
+            //}
         }
 
         public Message ComposeMessage(Message user)
@@ -147,7 +149,7 @@ namespace LoggingServiceClient
             byte[] message = Encoding.UTF8.GetBytes(str);
             stream.Write(message, 0, message.Count());
 
-            return connected = false;
+            return connected = true;
         }
 
         private Message AskForUserName()

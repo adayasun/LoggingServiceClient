@@ -18,12 +18,12 @@ namespace LoggingServiceClient
             string message = null;
 
             message =
-                "\"header\" : \"" + createToString.userName +
-                "\",\"data\" :[{\"message\": \"" + createToString.message +
-                "\", \"level\": \"" + createToString.level +
+                "{\"header\" : \"" + createToString.userName +
+                "\", \"message\": \"" + createToString.message +
+                "\", \"level\" : \"" + createToString.level +
                 "\", \"date\" : \"" + createToString.date +
-                "\",\"timezone\": \""+ createToString.timezone +"\"}]," +
-                "\"connected\": \"" + createToString.connected + "\"}";
+                "\", \"timezone\" : \""+ createToString.timezone +"\", " +
+                "\"connected\" : \"" + createToString.connected + "\"}";
 
            return message;
         }
