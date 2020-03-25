@@ -34,7 +34,8 @@ namespace LoggingServiceClient
                 {
                     try
                     {
-                        ComposeMessage(user);
+                        user = ComposeMessage(user);
+                        serializeAndEncode(user);
                     }
                     catch
                     {
@@ -53,12 +54,9 @@ namespace LoggingServiceClient
                     }
                 }
 
-                //Task send = Task.Run(() => Send());
-                //Task receive = Task.Run(() => Receive());
-                //receive.Wait();
                 clientSocket.Close();
                 Console.WriteLine("Disconnected.");
-                //Console.ReadKey();
+
                 connected = false;
             }
         }
@@ -72,7 +70,7 @@ namespace LoggingServiceClient
                     Message obj = new Message
                     {
                         userName = user.userName,
-                        message = "I'm the second event",
+                        message = "I'm an issue",
                         level = "CRITICAL",
                         date = DateTime.UtcNow.ToString("dddd, dd MMMM yyyy HH:mm:ss"),
                         timezone = "America/Sao_Paulo"
@@ -94,7 +92,7 @@ namespace LoggingServiceClient
             int loopCon = 0;
             Console.WriteLine("Please enter your message:");
             newMessage.message = UI.GetInput();
-            Console.WriteLine("Please select your message level:\n  1: DEBUG\n  2: INFO\n   3: WARNING\n    4: ERROR\n  5: CRITIAL");
+            Console.WriteLine("Please select your message level:\n\t1: DEBUG\n\t2: INFO\n\t3: WARNING\n\t4: ERROR\n\t5: CRITIAL");
             while (loopCon == 0)
             {
                 levelBuff = int.Parse(UI.GetInput());
@@ -127,13 +125,11 @@ namespace LoggingServiceClient
             }
             newMessage.date = DateTime.UtcNow.ToString("dddd, dd MMMM yyyy HH:mm:ss");
 
-
             return newMessage;
         }
 
         private bool serializeAndEncode(Message messageToBeConverted)
         {
-
             string str = Message.CreateMessageString(messageToBeConverted);
             byte[] message = Encoding.UTF8.GetBytes(str);
             stream.Write(message, 0, message.Count());

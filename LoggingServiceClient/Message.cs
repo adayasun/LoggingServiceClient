@@ -11,6 +11,7 @@ namespace LoggingServiceClient
         public string level { get; set; }
         public string date { get; set; }
         public string timezone { get; set; }
+        public string connected { get; set; }
 
         public static string CreateMessageString(Message createToString)
         {
