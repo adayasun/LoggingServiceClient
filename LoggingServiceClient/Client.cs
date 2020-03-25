@@ -18,46 +18,61 @@ namespace LoggingServiceClient
         NetworkStream stream;
         bool connected;
         // Constructor takes ip adress and port
-        public Client(string IP, int port, int choice)
+        public Client(string IP, int port)
         {
             connected = true;
+            int choice = 0;
             // Creates new instance of TcpClient as read only and destroy it after not in use
-            using (clientSocket = new TcpClient())
+            while(connected)
             {
-                Message user = new Message();
-                Console.WriteLine("Connecting.....");
-                clientSocket.Connect(IPAddress.Parse(IP), port);
-                Console.WriteLine("Connected");
-                user = AskForUserName(); //Received username
-                stream = clientSocket.GetStream();
-                if (choice == 1)
+
+                using (clientSocket = new TcpClient())
                 {
-                    try
+                    Console.WriteLine("Please enter 1 for Manual, 2 for Automatic or 3 to quit");
+                    choice = int.Parse(UI.GetInput());
+
+                    Message user = new Message();
+                    Console.WriteLine("Connecting.....");
+
+                    clientSocket.Connect(IPAddress.Parse(IP), port);
+                    Console.WriteLine("Connected");
+                    user.connected = "0";
+
+                    stream = clientSocket.GetStream();
+                    if (choice == 1) //Manual
                     {
-                        user = ComposeMessage(user);
+                        try
+                        {
+                            user = AskForUserName(); //Received username
+                            user = ComposeMessage(user);
+                            serializeAndEncode(user);
+                        }
+                        catch
+                        {
+                            Console.WriteLine("Something went wrong.");
+                        }
+                    }
+                    else if (choice == 2) //Automatic
+                    {
+                        try
+                        {
+                            Send(user);
+                        }
+                        catch
+                        {
+                            Console.WriteLine("Something went wrong.");
+                        }
+                    }
+                    else if (choice == 3) // Quit
+                    {
+                        user.connected = "1";
                         serializeAndEncode(user);
-                    }
-                    catch
-                    {
-                        Console.WriteLine("Something went wrong.");
-                    }
-                }
-                else if(choice == 2)
-                {
-                    try
-                    {
-                        Send(user);
-                    }
-                    catch
-                    {
-                        Console.WriteLine("Something went wrong.");
+                        clientSocket.Close();
+                        Console.WriteLine("Disconnected.");
+                        connected = false;
                     }
                 }
 
-                clientSocket.Close();
-                Console.WriteLine("Disconnected.");
-
-                connected = false;
             }
         }
 
@@ -67,16 +82,14 @@ namespace LoggingServiceClient
             {
                 try
                 {
-                    Message obj = new Message
-                    {
-                        userName = user.userName,
-                        message = "I'm an issue",
-                        level = "CRITICAL",
-                        date = DateTime.UtcNow.ToString("dddd, dd MMMM yyyy HH:mm:ss"),
-                        timezone = "America/Sao_Paulo"
-                    };
 
-                    connected = serializeAndEncode(obj);
+                    user.userName = "Momo";
+                    user.message = "I'm an issue";
+                    user.level = "CRITICAL";
+                    user.date = DateTime.UtcNow.ToString("dddd, dd MMMM yyyy HH:mm:ss");
+                    user.timezone = "America/Sao_Paulo";                   
+
+                    connected = serializeAndEncode(user);
                 }
                 catch (Exception e)
                 {
