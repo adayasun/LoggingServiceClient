@@ -1,4 +1,12 @@
-﻿using System;
+﻿/*
+	FILE			: Message.cs
+    PROJECT         : SENG2040 - Assign-03 (A-04)
+	PROGRAMMER		: Amy Dayasundara, Paul Smith
+    FIRST VERSION	: 2020-03-17
+	DESCRIPTION		:
+		Setting up the message info to be sent
+*/
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -12,6 +20,13 @@ namespace LoggingServiceClient
         public string date { get; set; }
         public string timezone { get; set; }
         public string connected { get; set; }
+
+        //
+        //METHOD        : CreateMessageStrin
+        //DESCRIPTION   : Create it to string
+        //PARAMETERS    : Message createToString - Take the Message object to be converted
+        //RETURN        : string - final created string message
+        //
 
         public static string CreateMessageString(Message createToString)
         {
